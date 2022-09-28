@@ -11,6 +11,7 @@
         <AssemblyName>Faker</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,7 +43,18 @@
         <Compile Include="Generator\GeneratorContext.cs" />
         <Compile Include="IFaker.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Value.Generators\BoolGenerator.cs" />
+        <Compile Include="Value.Generators\ByteGenerator.cs" />
+        <Compile Include="Value.Generators\CharGenerator.cs" />
+        <Compile Include="Value.Generators\DateTimeGenerator.cs" />
+        <Compile Include="Value.Generators\DoubleGenerator.cs" />
+        <Compile Include="Value.Generators\FloatGenerator.cs" />
+        <Compile Include="Value.Generators\IntGenerator.cs" />
         <Compile Include="Value.Generators\IValueGenerator.cs" />
+        <Compile Include="Value.Generators\ListGenerator.cs" />
+        <Compile Include="Value.Generators\LongGenerator.cs" />
+        <Compile Include="Value.Generators\ShortGenerator.cs" />
+        <Compile Include="Value.Generators\StringGenerator.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

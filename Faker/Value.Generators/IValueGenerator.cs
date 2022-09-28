@@ -1,7 +1,7 @@
 ﻿using System;
 using Faker.Generator;
 
-namespace Faker.value_generators
+namespace Faker.Value.Generators
 {
     public interface IValueGenerator
     {
