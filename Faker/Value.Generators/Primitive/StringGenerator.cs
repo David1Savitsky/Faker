@@ -9,13 +9,13 @@ namespace Faker.Value.Generators
         public object Generate(Type typeToGenerate, GeneratorContext context)
         {
             var str = new StringBuilder();
-            var strLength = context.Random.Next(0, 255);
+            var strLength = context.Random.Next(0, 10);
             for (int i = 0; i < strLength; i++)
             {
-                str.Append((char)new CharGenerator().Generate(typeToGenerate, context));
+                str.Append((char) context.Random.Next(0, 255));
             }
 
-            return str;
+            return str.ToString();
         }
 
         public bool CanGenerate(Type type)

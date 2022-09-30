@@ -7,8 +7,8 @@ namespace Faker.Value.Generators
     {
         public object Generate(Type typeToGenerate, GeneratorContext context)
         {
-            //return context.Random.NextInt64(int.MinValue, int.MaxValue);
-            throw new NotImplementedException();
+            //return context.Random.NextInt64(int.MinValue, int.MaxValue)
+            return context.Random.Next() << 32 | (uint)context.Random.Next();
         }
 
         public bool CanGenerate(Type type)
