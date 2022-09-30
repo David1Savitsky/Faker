@@ -39,22 +39,26 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Creator\DtoCreator.cs" />
+        <Compile Include="Exceptions\PrimitiveGenerationException.cs" />
         <Compile Include="Faker.cs" />
         <Compile Include="Generator\GeneratorContext.cs" />
         <Compile Include="IFaker.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Value.Generators\BoolGenerator.cs" />
-        <Compile Include="Value.Generators\ByteGenerator.cs" />
-        <Compile Include="Value.Generators\CharGenerator.cs" />
-        <Compile Include="Value.Generators\DateTimeGenerator.cs" />
-        <Compile Include="Value.Generators\DoubleGenerator.cs" />
-        <Compile Include="Value.Generators\FloatGenerator.cs" />
-        <Compile Include="Value.Generators\IntGenerator.cs" />
+        <Compile Include="Value.Generators\GeneratorsList.cs" />
         <Compile Include="Value.Generators\IValueGenerator.cs" />
-        <Compile Include="Value.Generators\ListGenerator.cs" />
-        <Compile Include="Value.Generators\LongGenerator.cs" />
-        <Compile Include="Value.Generators\ShortGenerator.cs" />
-        <Compile Include="Value.Generators\StringGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\BoolGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\ByteGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\CharGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\DateTimeGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\DoubleGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\FloatGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\IntGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\ListGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\LongGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\ShortGenerator.cs" />
+        <Compile Include="Value.Generators\Primitive\StringGenerator.cs" />
+        <Compile Include="Value.Generators\ValueGenerator.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
