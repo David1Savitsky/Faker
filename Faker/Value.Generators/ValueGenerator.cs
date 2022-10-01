@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Faker.Exceptions;
 using Faker.Generator;
 
@@ -11,7 +13,9 @@ public class ValueGenerator : IValueGenerator
 
     public ValueGenerator()
     {
-        _generators = new GeneratorsList()._generators;
+        _generators = Assembly.GetExecutingAssembly().DefinedTypes
+            .Where(t => t.GetInterface(nameof(IValueGenerator)) != null && t.IsClass && t != typeof(ValueGenerator))
+            .Select(t => (IValueGenerator)Activator.CreateInstance(t)).ToList();
     }
 
     public object Generate(Type typeToGenerate, GeneratorContext context)
