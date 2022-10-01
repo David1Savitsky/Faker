@@ -39,7 +39,6 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Creator\DtoCreator.cs" />
         <Compile Include="Exceptions\PrimitiveGenerationException.cs" />
         <Compile Include="Faker.cs" />
         <Compile Include="Generator\GeneratorContext.cs" />
