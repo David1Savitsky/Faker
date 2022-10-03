@@ -40,12 +40,12 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Checker\DependencyChecker.cs" />
+        <Compile Include="Exceptions\CanNotCreateTheObject.cs" />
         <Compile Include="Exceptions\PrimitiveGenerationException.cs" />
         <Compile Include="Faker.cs" />
         <Compile Include="Generator\GeneratorContext.cs" />
         <Compile Include="IFaker.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="Value.Generators\GeneratorsList.cs" />
         <Compile Include="Value.Generators\IValueGenerator.cs" />
         <Compile Include="Value.Generators\Primitive\BoolGenerator.cs" />
         <Compile Include="Value.Generators\Primitive\ByteGenerator.cs" />

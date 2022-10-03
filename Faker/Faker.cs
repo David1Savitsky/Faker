@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Faker.Checker;
+using Faker.Exceptions;
 using Faker.Generator;
 using Faker.Value.Generators;
 
@@ -56,6 +57,8 @@ namespace Faker
         {
             ConstructorInfo[] constructors = type.GetConstructors();
 
+            if (constructors.Length == 0)
+                return null;
             if (constructors.Length == 1)
                 return constructors[0];
 
@@ -73,6 +76,15 @@ namespace Faker
         private object CreateWithConstructor(Type t, ref HashSet<string> setParams)
         {
             ConstructorInfo constructorInfo = GetConstructorWithMaxCountOfParams(t);
+            if (constructorInfo == null)
+                try
+                {
+                    return Activator.CreateInstance(t)!;
+                }
+                catch (Exception)
+                {
+                    throw new CanNotCreateTheObject();
+                }
             var paramValues = new object[constructorInfo.GetParameters().Length];
             for (int i = 0; i < paramValues.Length; i++)
             {
