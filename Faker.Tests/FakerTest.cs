@@ -166,4 +166,13 @@ public class FakerTest
             Assert.NotNull(testValue.X);
             Assert.NotNull(testValue.Y);
         }
+
+        [Test]
+        public void ConstructorWithExc()
+        {
+            var obj = _faker.Create<FakerModels.ConstructorWithExc>();
+            Assert.NotNull(obj.A);
+            Assert.NotNull(obj.B);
+            Assert.NotNull(obj.C);
+        }
 }

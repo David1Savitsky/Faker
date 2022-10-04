@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Faker.Checker;
 using Faker.Exceptions;
@@ -27,7 +28,7 @@ namespace Faker
             return (T)Create(typeof(T));
         }
         
-        private object Create(Type t)
+        public object Create(Type t)
         {
             object obj;
             _dependencyChecker.AddTypeToDictionary(t);
@@ -39,10 +40,9 @@ namespace Faker
                 }
                 else
                 {
-                    var setParams = new HashSet<string>();
-                    obj = CreateWithConstructor(t, ref setParams); 
-                    SetFields(ref obj, t, setParams);
-                    SetProperties(ref obj, t, setParams);
+                    obj = CreateWithConstructor(t); 
+                    SetFields(ref obj, t);
+                    SetProperties(ref obj, t);
                 }  
             }
             else
@@ -53,94 +53,81 @@ namespace Faker
             return obj;
         }
 
-        private ConstructorInfo GetConstructorWithMaxCountOfParams(Type type)
+        private IOrderedEnumerable<ConstructorInfo> GetConstructors(Type type)
         {
-            ConstructorInfo[] constructors = type.GetConstructors();
-
-            if (constructors.Length == 0)
-                return null;
-            if (constructors.Length == 1)
-                return constructors[0];
-
-            int indexOfConstructorWithMaxCountOfparams = 0;
-
-            for (int i = 1; i < constructors.Length; i++)
-            {
-                if (constructors[i - 1].GetParameters().Length < constructors[i].GetParameters().Length)
-                    indexOfConstructorWithMaxCountOfparams = i;
-            }
-
-            return constructors[indexOfConstructorWithMaxCountOfparams];
+            return type.GetConstructors().OrderByDescending(i => i.GetParameters().Length);
         }
 
-        private object CreateWithConstructor(Type t, ref HashSet<string> setParams)
+        private object CreateWithConstructor(Type t)
         {
-            ConstructorInfo constructorInfo = GetConstructorWithMaxCountOfParams(t);
-            if (constructorInfo == null)
+            IOrderedEnumerable<ConstructorInfo> constructorInfos = GetConstructors(t);
+            foreach (var constructorInfo in constructorInfos)
+            {
                 try
                 {
-                    return Activator.CreateInstance(t)!;
+                    var paramValues = new object[constructorInfo.GetParameters().Length];
+                    for (int i = 0; i < paramValues.Length; i++)
+                    {
+                        if (_valueGenerator.CanGenerate(constructorInfo.GetParameters()[i].ParameterType))
+                        {
+                            paramValues[i] = _valueGenerator.Generate(constructorInfo.GetParameters()[i].ParameterType, _context);
+                        }
+                        else
+                        {
+                            paramValues[i] = Create(constructorInfo.GetParameters()[i].ParameterType);
+                        }
+                    }
+                    return constructorInfo.Invoke(paramValues);
                 }
-                catch (Exception)
+                catch (System.Exception)
                 {
-                    throw new CanNotCreateTheObject();
-                }
-            var paramValues = new object[constructorInfo.GetParameters().Length];
-            for (int i = 0; i < paramValues.Length; i++)
-            {
-                if (_valueGenerator.CanGenerate(constructorInfo.GetParameters()[i].ParameterType))
-                {
-                    paramValues[i] = _valueGenerator.Generate(constructorInfo.GetParameters()[i].ParameterType, _context);
-                    setParams.Add(constructorInfo.GetParameters()[i].Name);
-                }
-                else
-                {
-                    paramValues[i] = Create(constructorInfo.GetParameters()[i].ParameterType);
+                    
                 }
             }
-            return constructorInfo.Invoke(paramValues);
+            
+            try
+            {
+                return Activator.CreateInstance(t)!;
+
+            }
+            catch (System.Exception)
+            {
+            }
+
+            throw new CanNotCreateTheObject();
         }
 
-        private void SetFields(ref object obj, Type t, HashSet<string> setParams)
+        private void SetFields(ref object obj, Type t)
         {
             var fields = t.GetFields();
             foreach (var field in fields)
             {
-                if (!setParams.Contains(field.Name))
-                {
-                    if (_valueGenerator.CanGenerate(field.FieldType))
-                    {
-                        field.SetValue(obj, _valueGenerator.Generate(field.FieldType, _context));
-                    }
-                    else
-                    {
-                        field.SetValue(obj, Create(field.FieldType));
-                    }
-                }
+                if (field.GetValue(obj) != null && field.GetValue(obj).Equals(GetDefaultObjectValueType(t))) continue;
+                field.SetValue(obj,
+                    _valueGenerator.CanGenerate(field.FieldType)
+                        ? _valueGenerator.Generate(field.FieldType, _context)
+                        : Create(field.FieldType));
             }
         }
 
-        private void SetProperties(ref object obj, Type t, HashSet<string> setParams)
+        private void SetProperties(ref object obj, Type t)
         {
             var properties = t.GetProperties();
             foreach (var property in properties)
             {
-                if (!setParams.Contains(property.Name))
-                {
-                    if (property.CanWrite)
-                    {
-                        if (_valueGenerator.CanGenerate(property.PropertyType))
-                        {
-                            property.SetValue(obj, _valueGenerator.Generate(property.PropertyType, _context));
-                        }
-                        else
-                        {
-                            property.SetValue(obj, Create(property.PropertyType));
-                        }
-                    }
-                    
-                }
+                if (property.GetValue(obj) != null &&
+                    property.GetValue(obj).Equals(GetDefaultObjectValueType(t))) continue;
+                if (!property.CanWrite) continue;
+                property.SetValue(obj,
+                    _valueGenerator.CanGenerate(property.PropertyType)
+                        ? _valueGenerator.Generate(property.PropertyType, _context)
+                        : Create(property.PropertyType));
             }
+        }
+
+        private object GetDefaultObjectValueType(Type type)
+        {
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
     }
 }

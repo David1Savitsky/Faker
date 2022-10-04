@@ -10,22 +10,20 @@ namespace Faker.Value.Generators
         public object Generate(Type typeToGenerate, GeneratorContext context)
         {
             var genericTypeArgument = typeToGenerate.GenericTypeArguments[0];
-            var listObject = Activator.CreateInstance(typeToGenerate);
+            var listObject = (IList)Activator.CreateInstance(typeToGenerate);
 
             var length = context.Random.Next(10);
             
-            var executeMethod = context.Faker
+            /*var executeMethod = context.Faker
                 .GetType()
                 .GetMethod("Create")?
-                .MakeGenericMethod(genericTypeArgument);
+                .MakeGenericMethod(genericTypeArgument);*/
+            
 
             for (int i = 0; i < length; i++)
             {
-                var obj = new []{
-                    executeMethod?.Invoke(context.Faker, new object[]{})
-                };
-                
-                typeToGenerate.GetMethod("Add")?.Invoke(listObject, obj);
+                //typeToGenerate.GetMethod("Add")?.Invoke(listObject, obj);
+                listObject.Add(context.Faker.Create(genericTypeArgument));
             }
 
             return listObject;

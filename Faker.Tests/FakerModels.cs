@@ -1,4 +1,5 @@
-﻿using Faker.Generator;
+﻿using Faker.Exceptions;
+using Faker.Generator;
 using Faker.Value.Generators;
 
 namespace Faker.Tests;
@@ -108,10 +109,31 @@ public class FakerModels
             Y = y;
         }
     }
-
+    
     public struct StructWithoutConstructor
     {
         public int? X;
         public bool? Y;
+    }
+
+    public class ConstructorWithExc
+    {
+        public string A { get; set; }
+        public string B { get; set; }
+        public string C { get; set; }
+
+        public ConstructorWithExc(string A, string B, string C)
+        {
+            this.A = A;
+            this.B = B;
+            this.C = C;
+            throw new CanNotCreateTheObject();
+        }
+
+        public ConstructorWithExc(string A, string B)
+        {
+            this.A = A;
+            this.B = B;
+        }
     }
 }

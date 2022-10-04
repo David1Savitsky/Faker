@@ -4,7 +4,13 @@ namespace Faker.Tests.Checker;
 
 public class DependencyCheckerTest
 {
-    private DependencyChecker _checker = new ();
+    private DependencyChecker _checker;
+    
+    [SetUp]
+    public void Setup()
+    {
+        _checker = new();
+    }
         
     [Test]
     public void AddTypeToDictionaryTest()
